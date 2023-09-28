@@ -73,7 +73,6 @@ RCT_EXPORT_MODULE();
             @"cropperCancelText": @"Cancel",
             @"cropperChooseText": @"Choose",
             @"cropperRotateButtonsHidden": @NO,
-            @"cropDisabled": @NO
         };
         self.compression = [[Compression alloc] init];
     }
@@ -871,7 +870,6 @@ RCT_EXPORT_METHOD(openCropper:(NSDictionary *)options
 - (void)cropImage:(UIImage *)image {
     dispatch_async(dispatch_get_main_queue(), ^{
         TOCropViewController *cropVC;
-        BOOL cropDisabled = [[[self options] objectForKey:@"cropDisabled"] boolValue];
         if ([[[self options] objectForKey:@"cropperCircleOverlay"] boolValue]) {
             cropVC = [[TOCropViewController alloc] initWithCroppingStyle:TOCropViewCroppingStyleCircular image:image];
         } else {
@@ -895,14 +893,9 @@ RCT_EXPORT_METHOD(openCropper:(NSDictionary *)options
         cropVC.aspectRatioPickerButtonHidden = YES;
         cropVC.aspectRatioLockEnabled = NO;
         cropVC.toolbar.rotateCounterclockwiseButtonHidden = YES;
-        cropVC.cropView.gridOverlayHidden = NO;
         cropVC.cropView.cropBoxResizeEnabled = YES;
-        
-        if (cropDisabled) {
-            cropVC.toolbar.rotateClockwiseButtonHidden = NO;
-            cropVC.cropView.gridOverlayHidden = YES;
-            cropVC.cropView.cropBoxResizeEnabled = NO;
-        }
+        cropVC.doneButtonTitle = @"Done";
+
         
         cropVC.modalPresentationStyle = UIModalPresentationFullScreen;
         if (@available(iOS 15.0, *)) {
